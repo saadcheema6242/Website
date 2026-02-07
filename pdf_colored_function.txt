@@ -1,0 +1,315 @@
+Replace the generatePDF function (starting from line 106) with this colored version:
+
+```typescript
+const generatePDF = (lead: Lead) => {
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 25;
+    const contentWidth = pageWidth - 2 * margin;
+    let yPos = 25;
+
+    // Color palette - Navy Blue and White theme
+    const navyBlue = [26, 35, 126];
+    const lightBlue = [59, 130, 246];
+    const white = [255, 255, 255];
+    const lightGray = [248, 250, 252];
+    const darkGray = [71, 85, 105];
+
+    // ============ HEADER SECTION ============
+    // Top border - Navy Blue
+    doc.setLineWidth(2);
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    
+    yPos += 10;
+
+    // Company name - Navy Blue
+    doc.setFontSize(32);
+    doc.setTextColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LUXURY CRUISES', pageWidth / 2, yPos, { align: 'center' });
+    
+    yPos += 8;
+
+    // Document title - Light Blue
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.text('LEAD REGISTRATION REPORT', pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 6;
+
+    // Bottom header border - Navy Blue
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+
+    yPos += 10;
+
+    // Document metadata box - Light Gray background with Navy border
+    doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.rect(margin, yPos, contentWidth, 12, 'F');
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, contentWidth, 12, 'S');
+
+    doc.setFontSize(9);
+    doc.setTextColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`LEAD ID: ${lead.id.slice(0, 8).toUpperCase()}`, margin + 3, yPos + 5);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    })}`, pageWidth - margin - 3, yPos + 5, { align: 'right' });
+    
+    doc.text(`Submitted: ${lead.submittedAt.toDate().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+    })}`, pageWidth - margin - 3, yPos + 9, { align: 'right' });
+
+    yPos += 20;
+
+    // ============ SECTION 1: PERSONAL INFORMATION ============
+    // Navy Blue header
+    doc.setFillColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.rect(margin, yPos, contentWidth, 8, 'F');
+    
+    doc.setFontSize(11);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PERSONAL INFORMATION', margin + 3, yPos + 5.5);
+
+    yPos += 10;
+
+    // Personal info box - Navy border
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, contentWidth, 50, 'S');
+
+    yPos += 5;
+
+    const addLabelValuePair = (label: string, value: string, yPosition: number) => {
+        doc.setFontSize(8);
+        doc.setTextColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+        doc.setFont('helvetica', 'bold');
+        doc.text(label.toUpperCase(), margin + 3, yPosition);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+        doc.setFont('helvetica', 'normal');
+        const wrappedText = doc.splitTextToSize(value, contentWidth - 6);
+        doc.text(wrappedText, margin + 3, yPosition + 4);
+    };
+
+    addLabelValuePair('Full Name', lead.fullName, yPos);
+    yPos += 12;
+    
+    // Horizontal divider - Light Blue
+    doc.setDrawColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.setLineWidth(0.2);
+    doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+    
+    addLabelValuePair('Email Address', lead.email, yPos);
+    yPos += 12;
+    
+    doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+    
+    addLabelValuePair('Phone Number', lead.phone, yPos);
+    yPos += 12;
+    
+    doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+    
+    addLabelValuePair('Location', `${lead.city || 'N/A'}, ${lead.country}`, yPos);
+
+    yPos += 18;
+
+    // ============ SECTION 2: QUALIFICATION DETAILS ============
+    // Navy Blue header
+    doc.setFillColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.rect(margin, yPos, contentWidth, 8, 'F');
+    
+    doc.setFontSize(11);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('QUALIFICATION DETAILS', margin + 3, yPos + 5.5);
+
+    yPos += 10;
+
+    // Qualification box - Navy border
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, contentWidth, 42, 'S');
+
+    yPos += 5;
+
+    addLabelValuePair('Annual Income Range', lead.incomeRange, yPos);
+    yPos += 12;
+    
+    doc.setDrawColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.setLineWidth(0.2);
+    doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+    
+    addLabelValuePair('Age Range', lead.ageRange, yPos);
+    yPos += 12;
+    
+    doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+    
+    addLabelValuePair('Marital Status', lead.maritalStatus, yPos);
+
+    yPos += 18;
+
+    // Qualification status badge
+    doc.setFontSize(8);
+    doc.setTextColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('QUALIFICATION STATUS:', margin, yPos);
+    
+    const statusText = lead.qualificationStatus.toUpperCase();
+    const statusX = margin + 50;
+    
+    if (lead.qualificationStatus === 'qualified') {
+        // Green background for qualified
+        doc.setFillColor(34, 197, 94);
+        doc.rect(statusX - 2, yPos - 5, 35, 7, 'F');
+        doc.setTextColor(white[0], white[1], white[2]);
+    } else {
+        // Red border for unqualified
+        doc.setDrawColor(239, 68, 68);
+        doc.setLineWidth(1);
+        doc.rect(statusX - 2, yPos - 5, 35, 7, 'S');
+        doc.setTextColor(239, 68, 68);
+    }
+    
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text(statusText, statusX, yPos);
+
+    yPos += 15;
+
+    // ============ SECTION 3: JOURNEY MILESTONES ============
+    // Navy Blue header
+    doc.setFillColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.rect(margin, yPos, contentWidth, 8, 'F');
+    
+    doc.setFontSize(11);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('JOURNEY MILESTONES', margin + 3, yPos + 5.5);
+
+    yPos += 10;
+
+    // Journey status table - Navy border
+    const tableHeight = 40;
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, contentWidth, tableHeight, 'S');
+
+    // Table header
+    const col1X = margin + 3;
+    const col2X = margin + contentWidth * 0.6;
+    const col3X = margin + contentWidth * 0.8;
+
+    yPos += 6;
+
+    doc.setFontSize(8);
+    doc.setTextColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.setFont('helvetica', 'bold');
+    doc.text('MILESTONE', col1X, yPos);
+    doc.text('STATUS', col2X, yPos);
+    doc.text('COMPLETION', col3X, yPos);
+
+    yPos += 3;
+
+    // Header underline - Navy Blue
+    doc.setLineWidth(0.8);
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+
+    yPos += 6;
+
+    const milestones = [
+        { name: 'Specialist Call Transfer', status: !!lead.callTransferred },
+        { name: 'Virtual Tour Attendance', status: !!lead.digitalTourAccepted },
+        { name: 'Incentive Voucher Release', status: !!lead.voucherTransferred }
+    ];
+
+    milestones.forEach((milestone, index) => {
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+        doc.text(milestone.name, col1X, yPos);
+        
+        // Status symbol - Green for completed, Red for pending
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        if (milestone.status) {
+            doc.setTextColor(34, 197, 94); // Green
+            doc.text('✓', col2X + 3, yPos);
+        } else {
+            doc.setTextColor(239, 68, 68); // Red
+            doc.text('✗', col2X + 3, yPos);
+        }
+        
+        // Completion text
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(milestone.status ? 34 : 239, milestone.status ? 197 : 68, milestone.status ? 94 : 68);
+        doc.text(milestone.status ? 'Completed' : 'Pending', col3X, yPos);
+        
+        yPos += 8;
+        
+        // Row separator (except for last row) - Light Blue
+        if (index < milestones.length - 1) {
+            doc.setDrawColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+            doc.setLineWidth(0.2);
+            doc.line(margin + 3, yPos - 2, pageWidth - margin - 3, yPos - 2);
+        }
+    });
+
+    // ============ FOOTER SECTION ============
+    yPos = pageHeight - 20;
+
+    // Footer line - Navy Blue
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+
+    yPos += 5;
+
+    doc.setFontSize(7);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Luxury Cruises CRM Dashboard', margin, yPos);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(navyBlue[0], navyBlue[1], navyBlue[2]);
+    doc.text('CONFIDENTIAL DOCUMENT', pageWidth / 2, yPos, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text('Page 1 of 1', pageWidth - margin, yPos, { align: 'right' });
+
+    yPos += 4;
+
+    doc.setFontSize(6);
+    doc.setTextColor(lightBlue[0], lightBlue[1], lightBlue[2]);
+    doc.text('This document contains confidential information. Unauthorized distribution is prohibited.', pageWidth / 2, yPos, { align: 'center' });
+
+    return doc;
+};
+```
+
+This adds a professional blue and white color scheme to the PDF with:
+- Navy Blue (#1A237E) for headers, borders, and main text
+- Light Blue (#3B82F6) for labels and accents  
+- Green (#22C55E) for completed status
+- Red (#EF4444) for pending status
+- Light Gray (#F8FAFC) for background boxes

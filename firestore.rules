@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Cruise leads collection
+    match /cruise_leads/{leadId} {
+      // Allow users to read their own lead data by email
+      // Allow admins to read all leads
+      allow read: if request.auth != null && 
+                     (request.auth.token.email == resource.data.email ||
+                      request.auth.token.email in ['muhammadsaadc49@gmail.com']);
+      
+      // Allow anyone to create a new lead (for the application form submission)
+      allow create: if request.resource.data.email is string;
+      
+      // Only admins can update or delete leads
+      allow update, delete: if request.auth != null && 
+                               request.auth.token.email in ['muhammadsaadc49@gmail.com'];
+    }
+    
+    // Deny all other collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

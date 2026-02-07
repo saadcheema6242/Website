@@ -1,0 +1,334 @@
+🔧 FULL-STACK APPLICATION PROMPT
+Luxury Cruise Virtual Tour – Eligibility-Based Landing Page
+
+Tech Stack Required:
+
+Frontend: React / Next.js (preferred) OR Webflow + Custom JS
+
+Backend: Firebase (Firestore + Authentication)
+
+Hosting: Vercel / Firebase Hosting
+
+UI Framework: Tailwind CSS or custom modern CSS
+
+Form Handling: Firebase Firestore
+
+Optional: Firebase Cloud Functions (for validation & tagging leads)
+
+1️⃣ APPLICATION PURPOSE (VERY IMPORTANT)
+
+Build a high-converting, luxury-styled landing page inspired by premium cruise promotions, whose only goal is:
+
+To qualify users
+
+To filter out unqualified leads
+
+To register eligible couples for a 90-minute live online cruise destination presentation
+
+In exchange for a complimentary cruise incentive (subject to eligibility & attendance)
+
+This is NOT ecommerce, NOT booking, and NOT guaranteed free travel.
+
+2️⃣ TARGET AUDIENCE FILTER LOGIC (BACKEND + FRONTEND)
+
+The system must actively filter users based on:
+
+Qualification Criteria:
+
+Marital Status: Married / Couple only
+
+Age: At least one attendee 45+
+
+Household Income: $60,000+ annually
+
+Location: USA, Canada, UK, Australia
+
+Availability: Able to attend 90-minute online presentation within next 3 days
+
+Logic Rules:
+
+If user selects “No” to availability → show polite rejection message
+
+If age < 45 → show “This program is currently limited”
+
+If income below threshold → show ineligible message
+
+Only qualified users can submit the form successfully
+
+All submissions must still be saved in Firebase with a status:
+
+qualified
+
+unqualified
+
+pending_review
+
+3️⃣ UI / UX DESIGN REQUIREMENTS (DETAILED)
+🎨 VISUAL THEME
+
+Primary colors:
+
+Deep Navy Blue (#0B1C2D)
+
+White (#FFFFFF)
+
+Gold accents (#C9A24D)
+
+CTA Red (#C62828)
+
+Font:
+
+Headings: Playfair Display / Cinzel / Serif luxury font
+
+Body: Inter / Poppins / Sans-serif
+
+Look & Feel:
+
+Premium
+
+Calm
+
+Trustworthy
+
+No aggressive countdown timers
+
+No spammy popups
+
+4️⃣ PAGE STRUCTURE (FRONTEND)
+🔹 HERO SECTION
+
+Layout:
+
+Full-width background image of a luxury cruise ship at sunset
+
+Dark blue gradient overlay
+
+Centered text
+
+Copy:
+
+Trade 90 Minutes of Your Time for a Complimentary Cruise Experience
+
+Join our live online luxury cruise destination tour and receive a complimentary cruise incentive as our thank-you for attending.
+
+CTA Button:
+
+Red / Gold gradient
+
+Text: CHECK ELIGIBILITY
+
+Smooth scroll to form
+
+🔹 VISUAL PROOF SECTION
+
+Grid Layout:
+
+1 large cruise ship image
+
+4 smaller images:
+
+Luxury cabin
+
+Pool deck
+
+Fine dining hall
+
+Lounge / deck view
+
+Caption:
+
+Explore world-class cruise destinations and premium onboard experiences — all from the comfort of your home.
+
+🔹 HOW IT WORKS (3 STEPS)
+
+Use icon cards with subtle shadows.
+
+Apply & Confirm Eligibility
+
+Attend a 90-Minute Live Online Cruise Tour
+
+Receive a Complimentary Cruise Incentive
+
+🔹 ELIGIBILITY REQUIREMENTS (FILTER VISUALLY)
+
+Checklist with green check icons:
+
+Married couple / partners
+
+At least one attendee aged 45+
+
+Minimum $60,000 annual household income
+
+Able to attend full 90-minute online presentation
+
+Available within the next 3 days
+
+Disclaimer (small text):
+
+This invitation is limited and subject to eligibility verification.
+
+🔹 ABOUT THE VIRTUAL PRESENTATION
+
+Text block with soft background card.
+
+Content:
+
+We are hosting a live, professionally guided virtual tour of our newest luxury cruise itineraries and onboard experiences.
+
+Bullet Points:
+
+100% Online (Zoom / Google Meet)
+
+Live host & guided walkthrough
+
+Fixed 90-minute duration
+
+No obligation to purchase
+
+🔹 WHAT YOU RECEIVE (HIGHLIGHT BOX)
+
+Gold-outlined card.
+
+Headline:
+Complimentary Cruise Incentive Includes:
+
+Cruise travel voucher
+
+Multi-day / night package
+
+Select onboard inclusions (vary by offer)
+
+Disclaimer:
+
+Incentive details vary and are fully explained during the presentation. Terms & conditions apply.
+
+🔹 TRUST & TRANSPARENCY
+
+Icon row:
+
+No payment required to attend
+
+Professional hosted presentation
+
+Incentive provided after completion
+
+Limited availability
+
+Legal Note:
+
+This is a promotional presentation. Attendance is required to receive the incentive.
+
+5️⃣ LEAD CAPTURE FORM (FIREBASE-POWERED)
+📋 FORM UI
+
+Card-style container
+
+Rounded corners
+
+Soft shadow
+
+Step-by-step feel (optional multi-step)
+
+🧾 FORM FIELDS
+
+Full Name (text)
+
+Age (dropdown: 35–44, 45–54, 55–64, 65+)
+
+Marital Status (Married / Couple only selectable)
+
+Annual Household Income:
+
+$60k–$80k
+
+$80k–$100k
+
+$100k+
+
+Country (USA, Canada, UK, Australia)
+
+Can you attend a 90-minute online presentation in the next 3 days? (Yes / No)
+
+Phone / WhatsApp
+
+Email Address
+
+🚨 FORM VALIDATION
+
+Disable submit if criteria not met
+
+Show inline messages (not alerts)
+
+CTA BUTTON
+
+SUBMIT & RESERVE MY SLOT
+
+6️⃣ FIREBASE DATABASE STRUCTURE (REQUIRED)
+🔥 Firestore Collection: cruise_leads
+{
+  "fullName": "",
+  "ageRange": "",
+  "maritalStatus": "",
+  "incomeRange": "",
+  "country": "",
+  "availability": true,
+  "phone": "",
+  "email": "",
+  "qualificationStatus": "qualified",
+  "submittedAt": "timestamp",
+  "source": "landing_page"
+}
+
+Optional:
+
+Auto-tag Facebook Ads UTM data
+
+Timestamp-based slot tracking
+
+7️⃣ POST-SUBMISSION FLOW
+If QUALIFIED:
+
+Show confirmation screen:
+
+Thank you! Your eligibility is confirmed.
+Our team will contact you shortly to schedule your live cruise presentation.
+
+If NOT QUALIFIED:
+
+Polite message:
+
+Thank you for your interest.
+At this time, this invitation is limited to a specific group of travelers.
+
+8️⃣ COMPLIANCE & LEGAL (MANDATORY)
+
+❌ Do NOT use “free guaranteed cruise”
+
+✅ Use:
+
+Complimentary
+
+Incentive
+
+Subject to eligibility
+
+❌ No fake urgency timers
+
+✅ Clear disclaimer visible on page
+
+✅ No hidden conditions
+
+9️⃣ MOBILE-FIRST REQUIREMENTS
+
+Sticky bottom CTA on mobile
+
+Large readable fonts
+
+One-column layout
+
+Fast load (compressed images)
+
+
+you can alsoa anlyze images 
+
+that is in pics folder 
